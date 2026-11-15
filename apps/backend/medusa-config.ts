@@ -39,7 +39,10 @@ function assertEnv() {
   }
 }
 
-assertEnv()
+// `medusa build` (e.g. in Docker) compiles without connecting to anything.
+if (!process.argv.includes("build")) {
+  assertEnv()
+}
 
 const redisModules = env.REDIS_URL
   ? [
@@ -67,7 +70,20 @@ const redisModules = env.REDIS_URL
     ]
   : []
 
-// Without S3_BUCKET, the default local file provider stores uploads in ./static.
+// S3-compatible storage when S3_BUCKET is set. Otherwise the local provider
+// stores uploads in ./static and serves them from MEDUSA_BACKEND_URL/static.
+const localFileModule = {
+  resolve: "@medusajs/medusa/file",
+  options: {
+    providers: [
+      {
+        resolve: "@medusajs/medusa/file-local",
+        id: "local",
+        options: { backend_url: `${env.MEDUSA_BACKEND_URL || "http://localhost:9000"}/static` },
+      },
+    ],
+  },
+}
 const fileModules = env.S3_BUCKET
   ? [
       {
@@ -93,7 +109,7 @@ const fileModules = env.S3_BUCKET
         },
       },
     ]
-  : []
+  : [localFileModule]
 
 // The built-in system provider (pp_system_default) is always available for test checkouts.
 const paymentModules = env.STRIPE_API_KEY

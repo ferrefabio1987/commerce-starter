@@ -1,0 +1,12 @@
+**/node_modules
+**/.next
+**/.medusa
+**/.turbo
+**/static
+**/*.tsbuildinfo
+.git
+.env
+.env.*
+!.env.example
+deploy/.env.production
+coverage

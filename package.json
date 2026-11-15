@@ -15,7 +15,7 @@
     "seed": "node scripts/seed.mjs",
     "user:create": "pnpm --filter @store/backend exec medusa user",
     "test": "pnpm --filter @store/backend test:integration:http",
-    "test:smoke": "node --test tests/",
+    "test:smoke": "node --test tests/smoke.test.mjs",
     "test:acceptance": "bash scripts/acceptance.sh",
     "backend:dev": "turbo dev --filter=@store/backend",
     "storefront:dev": "turbo dev --filter=@store/storefront"

@@ -8,6 +8,12 @@ if (process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL) {
   MEDUSA_BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
 }
 
+// Server-side requests may use a private address (e.g. http://server:9000 in
+// Docker) while the browser uses the public NEXT_PUBLIC_MEDUSA_BACKEND_URL.
+if (typeof window === "undefined" && process.env.MEDUSA_BACKEND_INTERNAL_URL) {
+  MEDUSA_BACKEND_URL = process.env.MEDUSA_BACKEND_INTERNAL_URL
+}
+
 export const sdk = new Medusa({
   baseUrl: MEDUSA_BACKEND_URL,
   debug: process.env.NODE_ENV === "development",

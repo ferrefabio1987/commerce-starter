@@ -19,6 +19,9 @@ const S3_PATHNAME = process.env.MEDUSA_CLOUD_S3_PATHNAME
  */
 const nextConfig = {
   reactStrictMode: true,
+  // Self-contained server bundle for the Docker image (deploy/storefront.Dockerfile).
+  output: "standalone",
+  outputFileTracingRoot: path.resolve(__dirname, "../.."),
   async headers() {
     return [
       {

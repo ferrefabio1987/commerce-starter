@@ -3,6 +3,9 @@ import { listRegions } from "@lib/data/regions"
 import { getSiteOrigin, listCountryCodes } from "@lib/util/site"
 import type { MetadataRoute } from "next"
 
+// Rendered per request, never at build time: builds must not need a running backend.
+export const dynamic = "force-dynamic"
+
 const STATIC_PATHS = [
   "",
   "/store",

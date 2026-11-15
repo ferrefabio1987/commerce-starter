@@ -1,0 +1,16 @@
+# Automatic HTTPS (Let's Encrypt) for public domains; Caddy's local CA for
+# *.localhost. Point DNS A/AAAA records for both domains at this host.
+{$STOREFRONT_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy storefront:8000
+}
+
+{$BACKEND_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy server:9000
+}
+
+# Optional, with the minio profile: public media domain for S3_FILE_URL.
+# media.example.com {
+# 	reverse_proxy minio:9000
+# }

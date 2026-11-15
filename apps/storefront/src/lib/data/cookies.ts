@@ -33,20 +33,24 @@ export const getCacheTag = async (tag: string): Promise<string> => {
   }
 }
 
+// Upper bound on how long cached Store API responses are reused, so catalog
+// changes made in Medusa Admin reach the storefront without a redeploy.
+// Without it, `force-cache` responses never expire for anonymous visitors.
+const REVALIDATE_SECONDS = Number(process.env.STOREFRONT_REVALIDATE_SECONDS) || 60
+
 export const getCacheOptions = async (
   tag: string
-): Promise<{ tags: string[] } | Record<string, never>> => {
+): Promise<{ revalidate?: number; tags?: string[] }> => {
   if (typeof window !== "undefined") {
     return {}
   }
 
   const cacheTag = await getCacheTag(tag)
 
-  if (!cacheTag) {
-    return {}
+  return {
+    revalidate: REVALIDATE_SECONDS,
+    ...(cacheTag ? { tags: [`${cacheTag}`] } : {}),
   }
-
-  return { tags: [`${cacheTag}`] }
 }
 
 // `sameSite: "lax"` rather than `"strict"`: the customer returns from a

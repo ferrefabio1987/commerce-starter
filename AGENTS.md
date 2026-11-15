@@ -1,5 +1,7 @@
 # AGENTS.md
 
+> White-label single-store starter built on the Medusa DTC starter. Read README.md for the store-level workflow (root `.env`, `store.config.ts`, `seeds/`, `deploy/`). Root scripts run with `npm run <script>` and delegate to pnpm.
+
 ## Overview
 
 Medusa DTC Starter — a Turborepo workspace monorepo containing a Medusa backend (`@medusajs/medusa` 2.x, Node 22.22+, PostgreSQL 15+) and an optional Next.js storefront.
@@ -44,9 +46,9 @@ Medusa DTC Starter — a Turborepo workspace monorepo containing a Medusa backen
 │   │       ├── api/              # API routes: api/store/*, api/admin/* (file-based) + middlewares.ts
 │   │       ├── jobs/             # Scheduled jobs
 │   │       ├── links/            # Module links between modules
-│   │       ├── migration-scripts/# Data migrations run by db:migrate (e.g. initial-data-seed.ts)
+│   │       ├── migration-scripts/# Data migrations run by db:migrate (no store data: seeding is explicit)
 │   │       ├── modules/          # Custom modules (service + models + migrations)
-│   │       ├── scripts/          # medusa exec scripts (e.g. seed-demo-products.ts)
+│   │       ├── scripts/          # medusa exec scripts (seed.ts: minimal/demo presets from /seeds)
 │   │       ├── search/           # Product search index definition
 │   │       ├── subscribers/      # Event subscribers
 │   │       └── workflows/        # Workflows and workflow steps
@@ -126,9 +128,9 @@ cd apps/backend && <pm> run test:unit -- -t "returns the cart"
 ```bash
 cd apps/backend
 <pm> exec medusa db:generate <module-name>   # generate migrations for a custom module
-<pm> exec medusa db:migrate                  # run migrations + migration-scripts (initial data seed)
+<pm> exec medusa db:migrate                  # run migrations + migration-scripts
 <pm> exec medusa user -e admin@test.com -p supersecret
-<pm> exec medusa exec ./src/scripts/seed-demo-products.ts   # optional demo products
+<pm> exec medusa exec ./src/scripts/seed.ts demo   # or: npm run seed -- --preset=demo (repo root)
 ```
 
 ## Medusa Package Docs (`node_modules`)
