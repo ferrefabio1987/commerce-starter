@@ -111,7 +111,7 @@ if grep -E "created [1-9]" "$LOG_DIR/seed-demo-2.log"; then fail "second demo se
 grep -q "product            created 0, existing 8" "$LOG_DIR/seed-demo-2.log" || fail "unexpected product counts on second run"
 
 step "Admin is served"
-curl -ksf "$BACKEND_URL/app/" | grep -q "<div id=\"medusa\"" || fail "admin HTML not served at /app"
+curl -ksf "$BACKEND_URL/app/" | grep -c 'id="medusa"' > /dev/null || fail "admin HTML not served at /app"
 dc run --rm --no-deps server node_modules/.bin/medusa user -e "$ADMIN_EMAIL" -p "$ADMIN_PASSWORD" 2>&1 | grep -i "created" || fail "admin user not created"
 TOKEN=$(curl -ksf "$BACKEND_URL/auth/user/emailpass" -H 'content-type: application/json' \
   -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASSWORD\"}" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).token))')
@@ -119,10 +119,10 @@ TOKEN=$(curl -ksf "$BACKEND_URL/auth/user/emailpass" -H 'content-type: applicati
 
 step "Homepage picks up the new catalog (ISR, revalidate = 60 s)"
 for _ in $(seq 1 20); do
-  curl -ksf "$STOREFRONT_URL/de" | grep -q "Essential Tee" && break
+  curl -ksf "$STOREFRONT_URL/de" | grep -c "Essential Tee" > /dev/null && break
   sleep 6
 done
-curl -ksf "$STOREFRONT_URL/de" | grep -q "Essential Tee" || fail "homepage never showed demo products"
+curl -ksf "$STOREFRONT_URL/de" | grep -c "Essential Tee" > /dev/null || fail "homepage never showed demo products"
 
 step "Smoke tests through HTTPS (storefront pages, cart, checkout)"
 NODE_TLS_REJECT_UNAUTHORIZED=0 STOREFRONT_URL="$STOREFRONT_URL" BACKEND_URL="$BACKEND_URL" PUBLISHABLE_KEY="$KEY" COUNTRY=de \
@@ -132,7 +132,7 @@ PRODUCTS=$(admin_count products)
 echo "orders=$ORDERS products=$PRODUCTS"
 [ "$ORDERS" -ge 1 ] || fail "no order recorded"
 [ "$PRODUCTS" -eq 8 ] || fail "expected 8 products, got $PRODUCTS"
-curl -ksf "$STOREFRONT_URL/de/products/essential-tee" | grep -q "/static/" || fail "product image not served from uploads volume"
+curl -ksf "$STOREFRONT_URL/de/products/essential-tee" | grep -c "/static/" > /dev/null || fail "product image not served from uploads volume"
 
 step "Restart every container"
 dc restart
@@ -144,7 +144,8 @@ TOKEN=$(curl -ksf "$BACKEND_URL/auth/user/emailpass" -H 'content-type: applicati
   -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASSWORD\"}" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).token))')
 [ "$(admin_count orders)" = "$ORDERS" ] || fail "order count changed after restart"
 [ "$(admin_count products)" = "$PRODUCTS" ] || fail "product count changed after restart"
-IMG=$(curl -ksf "$STOREFRONT_URL/de/products/essential-tee" | grep -o "$BACKEND_URL/static/[^\"]*\.png" | head -1)
+PAGE=$(curl -ksf "$STOREFRONT_URL/de/products/essential-tee")
+[[ $PAGE =~ (https://[^\"]*/static/[^\"]*\.png) ]] && IMG=${BASH_REMATCH[1]} || fail "no uploaded image URL on product page"
 curl -ksf -o /dev/null "$IMG" || fail "uploaded image missing after restart: $IMG"
 NODE_TLS_REJECT_UNAUTHORIZED=0 STOREFRONT_URL="$STOREFRONT_URL" BACKEND_URL="$BACKEND_URL" PUBLISHABLE_KEY="$KEY" COUNTRY=de \
   node --test --test-name-pattern="storefront renders" tests/smoke.test.mjs 2>&1 | grep -E "^ℹ (pass|fail)"
