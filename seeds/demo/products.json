@@ -1,0 +1,123 @@
+[
+  {
+    "handle": "essential-tee",
+    "title": "Essential Tee",
+    "description": "A midweight cotton t-shirt with a relaxed fit. Made to be worn every day.",
+    "category": "apparel",
+    "collection": "featured",
+    "weight": 200,
+    "images": ["tshirt-black.png", "tshirt-white.png"],
+    "options": [
+      { "title": "Size", "values": ["S", "M", "L", "XL"] },
+      { "title": "Color", "values": ["Black", "White"] }
+    ],
+    "variants": [
+      { "sku": "TEE-S-BLACK", "options": { "Size": "S", "Color": "Black" }, "price": 25, "inventory": 50 },
+      { "sku": "TEE-M-BLACK", "options": { "Size": "M", "Color": "Black" }, "price": 25, "inventory": 50 },
+      { "sku": "TEE-L-BLACK", "options": { "Size": "L", "Color": "Black" }, "price": 25, "inventory": 50 },
+      { "sku": "TEE-XL-BLACK", "options": { "Size": "XL", "Color": "Black" }, "price": 25, "inventory": 50 },
+      { "sku": "TEE-S-WHITE", "options": { "Size": "S", "Color": "White" }, "price": 25, "inventory": 50 },
+      { "sku": "TEE-M-WHITE", "options": { "Size": "M", "Color": "White" }, "price": 25, "inventory": 50 },
+      { "sku": "TEE-L-WHITE", "options": { "Size": "L", "Color": "White" }, "price": 25, "inventory": 50 },
+      { "sku": "TEE-XL-WHITE", "options": { "Size": "XL", "Color": "White" }, "price": 25, "inventory": 0 }
+    ]
+  },
+  {
+    "handle": "classic-hoodie",
+    "title": "Classic Hoodie",
+    "description": "Brushed fleece hoodie with a kangaroo pocket and a lined hood.",
+    "category": "apparel",
+    "collection": "featured",
+    "weight": 600,
+    "images": ["hoodie-grey.png"],
+    "options": [{ "title": "Size", "values": ["S", "M", "L", "XL"] }],
+    "variants": [
+      { "sku": "HOODIE-S", "options": { "Size": "S" }, "price": 65, "inventory": 25 },
+      { "sku": "HOODIE-M", "options": { "Size": "M" }, "price": 65, "inventory": 25 },
+      { "sku": "HOODIE-L", "options": { "Size": "L" }, "price": 65, "inventory": 25 },
+      { "sku": "HOODIE-XL", "options": { "Size": "XL" }, "price": 65, "inventory": 25 }
+    ]
+  },
+  {
+    "handle": "everyday-cap",
+    "title": "Everyday Cap",
+    "description": "Six-panel cotton twill cap with an adjustable strap.",
+    "category": "accessories",
+    "collection": "new-arrivals",
+    "weight": 120,
+    "images": ["cap-olive.png"],
+    "options": [{ "title": "Size", "values": ["One size"] }],
+    "variants": [
+      { "sku": "CAP-OS", "options": { "Size": "One size" }, "price": 22, "inventory": 40 }
+    ]
+  },
+  {
+    "handle": "canvas-tote",
+    "title": "Canvas Tote",
+    "description": "Heavy cotton canvas tote with long handles and an inner pocket.",
+    "category": "accessories",
+    "collection": "featured",
+    "weight": 300,
+    "images": ["tote-natural.png"],
+    "options": [{ "title": "Size", "values": ["One size"] }],
+    "variants": [
+      { "sku": "TOTE-OS", "options": { "Size": "One size" }, "price": 18, "inventory": 60 }
+    ]
+  },
+  {
+    "handle": "stoneware-mug",
+    "title": "Stoneware Mug",
+    "description": "Glazed stoneware mug, 350 ml. Dishwasher and microwave safe.",
+    "category": "home",
+    "collection": "new-arrivals",
+    "weight": 400,
+    "images": ["mug-sand.png", "mug-slate.png"],
+    "options": [{ "title": "Color", "values": ["Sand", "Slate"] }],
+    "variants": [
+      { "sku": "MUG-SAND", "options": { "Color": "Sand" }, "price": 16, "inventory": 80 },
+      { "sku": "MUG-SLATE", "options": { "Color": "Slate" }, "price": 16, "inventory": 80 }
+    ]
+  },
+  {
+    "handle": "insulated-bottle",
+    "title": "Insulated Bottle",
+    "description": "Double-wall steel bottle that keeps drinks cold for 24 hours.",
+    "category": "home",
+    "collection": "new-arrivals",
+    "weight": 350,
+    "images": ["bottle-sage.png"],
+    "options": [{ "title": "Capacity", "values": ["500 ml", "750 ml"] }],
+    "variants": [
+      { "sku": "BOTTLE-500", "options": { "Capacity": "500 ml" }, "price": 28, "inventory": 30 },
+      { "sku": "BOTTLE-750", "options": { "Capacity": "750 ml" }, "price": 32, "inventory": 30 }
+    ]
+  },
+  {
+    "handle": "dotted-notebook",
+    "title": "Dotted Notebook",
+    "description": "A5 hardcover notebook with 192 pages of acid-free paper.",
+    "category": "home",
+    "collection": "featured",
+    "weight": 350,
+    "images": ["notebook-navy.png"],
+    "options": [{ "title": "Paper", "values": ["Dotted", "Lined"] }],
+    "variants": [
+      { "sku": "NOTEBOOK-DOTTED", "options": { "Paper": "Dotted" }, "price": 14, "inventory": 100 },
+      { "sku": "NOTEBOOK-LINED", "options": { "Paper": "Lined" }, "price": 14, "inventory": 100 }
+    ]
+  },
+  {
+    "handle": "soy-candle",
+    "title": "Soy Candle",
+    "description": "Hand-poured soy wax candle in a reusable glass jar. Around 40 hours of burn time.",
+    "category": "home",
+    "collection": "new-arrivals",
+    "weight": 450,
+    "images": ["candle-amber.png"],
+    "options": [{ "title": "Scent", "values": ["Cedar", "Fig"] }],
+    "variants": [
+      { "sku": "CANDLE-CEDAR", "options": { "Scent": "Cedar" }, "price": 24, "inventory": 35 },
+      { "sku": "CANDLE-FIG", "options": { "Scent": "Fig" }, "price": 24, "inventory": 35 }
+    ]
+  }
+]

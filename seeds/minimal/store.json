@@ -1,0 +1,60 @@
+{
+  "store": {
+    "name": "My Store",
+    "currencies": ["eur"]
+  },
+  "salesChannel": {
+    "name": "Webshop",
+    "description": "Online storefront"
+  },
+  "region": {
+    "key": "default",
+    "name": "Europe",
+    "currency": "eur",
+    "countries": ["at", "be", "de", "dk", "es", "fi", "fr", "ie", "it", "lu", "nl", "pt", "se"],
+    "paymentProviders": ["pp_system_default"],
+    "automaticTaxes": true,
+    "policies": {
+      "return_window_days": 30,
+      "free_returns": false,
+      "shipping_rate": 5,
+      "handling_days_min": 0,
+      "handling_days_max": 1,
+      "transit_days_min": 2,
+      "transit_days_max": 4
+    }
+  },
+  "taxProvider": "tp_system",
+  "stockLocation": {
+    "name": "Main Warehouse",
+    "address": {
+      "address_1": "",
+      "city": "Berlin",
+      "country_code": "DE"
+    }
+  },
+  "fulfillment": {
+    "provider": "manual_manual",
+    "setName": "Main Warehouse shipping",
+    "serviceZoneName": "Europe"
+  },
+  "shippingOptions": [
+    {
+      "key": "standard",
+      "name": "Standard Shipping",
+      "label": "Standard",
+      "description": "Delivered in 2-4 business days.",
+      "amount": 5
+    },
+    {
+      "key": "express",
+      "name": "Express Shipping",
+      "label": "Express",
+      "description": "Delivered in 1-2 business days.",
+      "amount": 12
+    }
+  ],
+  "publishableKey": {
+    "title": "Storefront"
+  }
+}

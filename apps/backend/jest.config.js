@@ -1,5 +1,9 @@
+const path = require("path");
 const { loadEnv } = require("@medusajs/utils");
-loadEnv("test", process.cwd());
+loadEnv("test", path.resolve(__dirname, "../.."));
+// Tests use the in-memory event bus and workflow engine, never the developer's Redis.
+// An empty value (not delete) keeps medusa-config's loadEnv from filling it back in.
+process.env.REDIS_URL = "";
 
 module.exports = {
   transform: {

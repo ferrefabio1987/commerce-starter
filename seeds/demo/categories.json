@@ -1,0 +1,5 @@
+[
+  { "handle": "apparel", "name": "Apparel", "description": "Everyday clothing." },
+  { "handle": "home", "name": "Home", "description": "Objects for the home." },
+  { "handle": "accessories", "name": "Accessories", "description": "Bags, caps and carry goods." }
+]

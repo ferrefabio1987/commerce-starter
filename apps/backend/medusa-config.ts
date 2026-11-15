@@ -3,7 +3,10 @@ import { loadEnv, defineConfig } from "@medusajs/framework/utils"
 
 // Local development reads the single repo-root .env (see .env.example).
 // In containers there is no .env file and real environment variables are used.
-loadEnv(process.env.NODE_ENV || "development", path.resolve(__dirname, "../.."))
+// Under Jest, jest.config.js has already loaded it (with test overrides).
+if (process.env.NODE_ENV !== "test") {
+  loadEnv(process.env.NODE_ENV || "development", path.resolve(__dirname, "../.."))
+}
 
 const env = process.env
 const isProduction = env.NODE_ENV === "production"
