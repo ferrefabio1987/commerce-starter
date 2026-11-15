@@ -274,7 +274,7 @@ One store = one compose stack (`deploy/docker-compose.prod.yml`):
 | `worker` | same backend image | Subscribers, scheduled jobs, search indexing (`MEDUSA_WORKER_MODE=worker`) |
 | `migrate` | same backend image | `medusa db:migrate` on every `up`, then exits; server/worker wait for it |
 | `postgres`, `redis` | official | Named volumes, **no published ports** |
-| `minio` (profile) | minio | Optional self-hosted S3-compatible storage |
+| `s3` (profile) | SeaweedFS | Optional self-hosted S3-compatible storage |
 
 ### First deployment
 
@@ -350,9 +350,10 @@ and terminate TLS there. Keep `STOREFRONT_URL` / `BACKEND_URL` set to the public
   Fine for a single host; back the volume up.
 - S3-compatible (recommended for production): set `S3_BUCKET`, `S3_FILE_URL` (public base URL),
   `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, and `S3_ENDPOINT` for non-AWS services
-  (R2, Spaces, MinIO; set `S3_FORCE_PATH_STYLE=true` for MinIO). The bucket must allow public reads.
-- Self-hosted MinIO: start with `--profile minio`, use the MinIO values in `.env.production.example`,
-  and enable the media site in `deploy/Caddyfile`.
+  (R2, Spaces, SeaweedFS, MinIO; set `S3_FORCE_PATH_STYLE=true` for self-hosted servers). The bucket must allow public reads.
+- Self-hosted: start with `--profile s3` (SeaweedFS; `deploy/seaweedfs-start.sh` sets credentials,
+  anonymous read and creates the bucket), use the values in `.env.production.example`, and enable the
+  media site in `deploy/Caddyfile`. (The official MinIO images are no longer published on Docker Hub.)
 
 ### Secrets
 
@@ -498,7 +499,8 @@ See the bottom of this file, section "Verification log", for the exact commands 
 last verification run.
 
 Implemented but **not verified** (needs your credentials or infrastructure):
-Stripe payments, external S3 providers (AWS/R2/Spaces), the MinIO profile, real-domain Let's Encrypt
+Stripe payments, hosted S3 providers (AWS/R2/Spaces), the `s3` compose profile as a whole
+(its SeaweedFS setup and Medusa's S3 upload path were verified separately), real-domain Let's Encrypt
 certificates, email notifications (no notification provider is configured; Medusa logs instead).
 
 Known limitations:
@@ -513,4 +515,20 @@ Known limitations:
 
 ## Verification log
 
-_Filled in by the latest verification run._
+Run on 2026-11-15, macOS arm64, Node 24, pnpm 10.32.1, Docker 29 / Compose v5, Medusa 2.22.7, Next.js 16.3.8.
+
+| Check | Command | Result |
+| --- | --- | --- |
+| TypeScript | `npm run typecheck` | pass (both apps) |
+| Lint | `npm run lint` | pass: backend no issues; storefront 0 errors, 28 upstream warnings |
+| Production build | `npm run build` | pass (`medusa build` + `next build`) |
+| Storefront build without backend | `docker build -f deploy/storefront.Dockerfile` with an unresolvable backend URL | pass |
+| Seed tests | `npm test` | 2/2 pass: bad preset rejected; minimal, minimal again, demo, demo again with identical record counts; Admin edit preserved; Store API EUR prices |
+| Dev workflow | `cp .env.example .env`, `docker compose up -d`, `npm run db:migrate`, `npm run seed -- --preset=minimal`, `--preset=demo` ×2, `npm run dev` | pass; second demo run created 0 records |
+| Smoke test (dev) | `npm run test:smoke` | 4/4 pass (pages, EUR prices, cart add/update/remove, checkout to order) |
+| Browser (dev) | manual in a browser | home, product variants, cart, 4-step checkout with "Manual Payment", search, category, register, order history, rebrand via `store.config.ts` only |
+| Production stack | `npm run test:acceptance` | **pass**: empty volumes, migrate, minimal seed, empty-catalog pages 200, demo seed ×2 (no duplicates), HTTPS via Caddy, Admin HTML + API login, smoke 4/4, restart all containers, orders/products/images persisted |
+| Env validation | backend image started with no env / with `supersecret` | refuses to start, lists each problem |
+| Catalog freshness (prod) | rename a product via Admin API on the running prod stack | visible on the storefront after ~70 s (never, before the revalidation fix) |
+| S3 uploads | prod backend image + SeaweedFS, `POST /admin/uploads` | pass: file stored in the bucket, public URL returns identical bytes |
+| Published ports | `docker compose -f deploy/docker-compose.prod.yml config` | only Caddy (80/443) |
