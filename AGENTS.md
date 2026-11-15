@@ -36,7 +36,7 @@ Medusa DTC Starter — a Turborepo workspace monorepo containing a Medusa backen
 ```text
 .
 ├── apps/
-│   ├── backend/                  # Medusa application (@dtc/backend)
+│   ├── backend/                  # Medusa application (@store/backend)
 │   │   ├── medusa-config.ts      # Medusa config: DB URL, CORS, secrets, modules
 │   │   ├── integration-tests/    # setup.js (Jest setupFiles) and http/*.spec.ts suites
 │   │   └── src/
@@ -50,7 +50,7 @@ Medusa DTC Starter — a Turborepo workspace monorepo containing a Medusa backen
 │   │       ├── search/           # Product search index definition
 │   │       ├── subscribers/      # Event subscribers
 │   │       └── workflows/        # Workflows and workflow steps
-│   └── storefront/               # OPTIONAL Next.js storefront (@dtc/storefront)
+│   └── storefront/               # OPTIONAL Next.js storefront (@store/storefront)
 │       └── src/
 │           ├── app/              # Next.js App Router routes
 │           ├── lib/data/         # Server-side Medusa API calls (js-sdk)
