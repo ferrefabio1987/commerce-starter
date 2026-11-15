@@ -20,6 +20,7 @@ import { z } from "@medusajs/framework/zod"
 import type { ExecArgs, MedusaContainer } from "@medusajs/framework/types"
 import {
   ContainerRegistrationKeys,
+  MedusaError,
   Modules,
   ProductStatus,
 } from "@medusajs/framework/utils"
@@ -124,7 +125,7 @@ const Products = z.array(
 export function parsePreset(args: string[] = []): Preset {
   const raw = args.find((a) => a.trim().length)?.replace(/^(--)?preset=/, "")
   if (!raw || !(PRESETS as readonly string[]).includes(raw)) {
-    throw new Error(
+    throw new MedusaError(MedusaError.Types.INVALID_DATA, 
       `Unknown or missing seed preset "${raw ?? ""}". Use one of: ${PRESETS.join(", ")}.\n` +
         "  Example: npm run seed -- --preset=demo"
     )
@@ -139,11 +140,11 @@ function seedsDir() {
 function readJson<T>(schema: z.ZodType<T>, file: string): T {
   const full = path.join(seedsDir(), file)
   if (!fs.existsSync(full)) {
-    throw new Error(`Seed file not found: ${full} (set SEEDS_DIR to the seeds directory)`)
+    throw new MedusaError(MedusaError.Types.INVALID_DATA, `Seed file not found: ${full} (set SEEDS_DIR to the seeds directory)`)
   }
   const result = schema.safeParse(JSON.parse(fs.readFileSync(full, "utf8")))
   if (!result.success) {
-    throw new Error(`Invalid seed file ${full}:\n${z.prettifyError(result.error)}`)
+    throw new MedusaError(MedusaError.Types.INVALID_DATA, `Invalid seed file ${full}:\n${z.prettifyError(result.error)}`)
   }
   return result.data
 }
@@ -280,7 +281,7 @@ async function seedMinimal(container: MedusaContainer, counts: Counter): Promise
     const taken = regions.flatMap((r) => (r.countries ?? []).map((c) => c?.iso_2))
     const conflicts = cfg.region.countries.filter((c) => taken.includes(c))
     if (conflicts.length) {
-      throw new Error(
+      throw new MedusaError(MedusaError.Types.INVALID_DATA, 
         `Cannot create region "${cfg.region.name}": countries ${conflicts.join(", ")} already belong to another region. ` +
           "Adjust seeds/minimal/store.json or the existing regions in Medusa Admin."
       )
@@ -352,7 +353,7 @@ async function seedMinimal(container: MedusaContainer, counts: Counter): Promise
     ).data[0]
   let location = await getLocation()
   if (!location) {
-    throw new Error(`Store default stock location ${stockLocationId} no longer exists.`)
+    throw new MedusaError(MedusaError.Types.INVALID_DATA, `Store default stock location ${stockLocationId} no longer exists.`)
   }
 
   if (!location.fulfillment_providers?.some((p) => p?.id === cfg.fulfillment.provider)) {
@@ -543,17 +544,17 @@ async function seedDemo(container: MedusaContainer, counts: Counter, base: Minim
       filters: { sku: skus },
     })
     if (takenSkus.length) {
-      throw new Error(
+      throw new MedusaError(MedusaError.Types.INVALID_DATA, 
         `SKUs already used by other products: ${takenSkus.map((v) => v.sku).join(", ")}. ` +
           "Rename them in seeds/demo/products.json or remove the conflicting variants."
       )
     }
     for (const p of newProducts) {
       if (p.category && !categoryIds.has(p.category)) {
-        throw new Error(`Product "${p.handle}" references unknown category "${p.category}".`)
+        throw new MedusaError(MedusaError.Types.INVALID_DATA, `Product "${p.handle}" references unknown category "${p.category}".`)
       }
       if (p.collection && !collectionIds.has(p.collection)) {
-        throw new Error(`Product "${p.handle}" references unknown collection "${p.collection}".`)
+        throw new MedusaError(MedusaError.Types.INVALID_DATA, `Product "${p.handle}" references unknown collection "${p.collection}".`)
       }
     }
 
@@ -641,7 +642,7 @@ async function uploadImages(container: MedusaContainer, files: string[]) {
       files: files.map((filename) => {
         const full = path.join(dir, filename)
         if (!fs.existsSync(full)) {
-          throw new Error(`Demo image not found: ${full}`)
+          throw new MedusaError(MedusaError.Types.INVALID_DATA, `Demo image not found: ${full}`)
         }
         return {
           filename,

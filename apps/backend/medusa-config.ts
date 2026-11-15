@@ -1,5 +1,5 @@
 import path from "path"
-import { loadEnv, defineConfig } from "@medusajs/framework/utils"
+import { loadEnv, defineConfig, MedusaError } from "@medusajs/framework/utils"
 
 // Local development reads the single repo-root .env (see .env.example).
 // In containers there is no .env file and real environment variables are used.
@@ -31,7 +31,8 @@ function assertEnv() {
     }
   }
   if (problems.length) {
-    throw new Error(
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
       `Invalid backend environment:\n  - ${problems.join("\n  - ")}\n` +
         "See .env.example for every variable and its purpose."
     )
