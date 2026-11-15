@@ -19,7 +19,16 @@ module.exports = {
         visibility: "visibility",
         padding: "padding-top padding-right padding-bottom padding-left",
       },
+      // White-label tokens: values come from store.config.ts via CSS variables (src/app/layout.tsx).
       colors: {
+        brand: {
+          DEFAULT: "var(--brand-primary)",
+          hover: "var(--brand-primary-hover)",
+          fg: "var(--brand-primary-fg)",
+          secondary: "var(--brand-secondary)",
+          "secondary-hover": "var(--brand-secondary-hover)",
+          "secondary-fg": "var(--brand-secondary-fg)",
+        },
         grey: {
           0: "#FFFFFF",
           5: "#F9FAFB",
@@ -35,6 +44,8 @@ module.exports = {
         },
       },
       borderRadius: {
+        md: "var(--brand-radius)",
+        lg: "calc(var(--brand-radius) * 1.5)",
         none: "0px",
         soft: "2px",
         base: "4px",
@@ -58,16 +69,7 @@ module.exports = {
         "3xl": "2rem",
       },
       fontFamily: {
-        sans: [
-          "Inter",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "Segoe UI",
-          "Roboto",
-          "Helvetica Neue",
-          "Ubuntu",
-          "sans-serif",
-        ],
+        sans: ["var(--brand-font)"],
       },
       keyframes: {
         ring: {

@@ -28,6 +28,9 @@
       ],
       "@pages/*": [
         "pages/*"
+      ],
+      "@store-config": [
+        "../store.config.ts"
       ]
     },
     "plugins": [

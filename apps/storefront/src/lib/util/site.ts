@@ -1,7 +1,8 @@
 import "server-only"
 import { headers } from "next/headers"
+import { storeConfig } from "@store-config"
 
-export const STORE_NAME = "Medusa Store"
+export const STORE_NAME = storeConfig.name
 
 export const DEFAULT_COUNTRY_CODE = (
   process.env.NEXT_PUBLIC_DEFAULT_REGION || "dk"

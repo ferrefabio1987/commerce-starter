@@ -10,12 +10,13 @@ import { Fragment } from "react"
 import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
 import { Locale } from "@lib/data/locales"
+import { storeConfig } from "@store-config"
 
 
-const SideMenuItems = {
+const SideMenuItems: Record<string, string> = {
   Home: "/",
-  Store: "/store",
-  Account: "/account",
+  ...Object.fromEntries(storeConfig.nav.links.map((l) => [l.label, l.href])),
+  ...(storeConfig.features.customerAccounts ? { Account: "/account" } : {}),
   Cart: "/cart",
 }
 
@@ -112,27 +113,29 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                           />
                         </div>
                       )}
-                      <div
-                        className="flex justify-between"
-                        onMouseEnter={countryToggleState.open}
-                        onMouseLeave={countryToggleState.close}
-                      >
-                        {regions && (
-                          <CountrySelect
-                            toggleState={countryToggleState}
-                            regions={regions}
-                          />
-                        )}
-                        <ArrowRightMini
-                          className={clx(
-                            "transition-transform duration-150",
-                            countryToggleState.state ? "-rotate-90" : ""
+                      {storeConfig.features.countrySelect && (
+                        <div
+                          className="flex justify-between"
+                          onMouseEnter={countryToggleState.open}
+                          onMouseLeave={countryToggleState.close}
+                        >
+                          {regions && (
+                            <CountrySelect
+                              toggleState={countryToggleState}
+                              regions={regions}
+                            />
                           )}
-                        />
-                      </div>
+                          <ArrowRightMini
+                            className={clx(
+                              "transition-transform duration-150",
+                              countryToggleState.state ? "-rotate-90" : ""
+                            )}
+                          />
+                        </div>
+                      )}
                       <Text className="flex justify-between txt-compact-small">
-                        © {new Date().getFullYear()} Medusa Store. All rights
-                        reserved.
+                        © {new Date().getFullYear()} {storeConfig.name}. All
+                        rights reserved.
                       </Text>
                     </div>
                   </div>

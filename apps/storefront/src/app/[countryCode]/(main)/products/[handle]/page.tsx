@@ -43,7 +43,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const description = product.description || product.title
 
   return {
-    title: `${product.title} | ${STORE_NAME}`,
+    // The root layout's title template appends the store name.
+    title: product.title,
     description,
     alternates: {
       canonical: productUrl,

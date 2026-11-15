@@ -8,6 +8,8 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import CartButton from "@modules/layout/components/cart-button"
 import Search from "@modules/layout/components/search"
 import SideMenu from "@modules/layout/components/side-menu"
+import StoreLogo from "@modules/layout/components/store-logo"
+import { storeConfig } from "@store-config"
 
 export default async function Nav() {
   const [regions, locales, currentLocale] = await Promise.all([
@@ -18,11 +20,18 @@ export default async function Nav() {
 
   return (
     <div className="sticky top-0 inset-x-0 z-50 group">
-      <header className="relative h-16 mx-auto border-b duration-200 bg-white border-ui-border-base">
+      <header className="relative h-16 mx-auto border-b duration-200 bg-ui-bg-base border-ui-border-base">
         <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular">
           <div className="flex-1 basis-0 h-full flex items-center">
             <div className="h-full">
               <SideMenu regions={regions} locales={locales} currentLocale={currentLocale} />
+            </div>
+            <div className="hidden small:flex items-center gap-x-6 h-full ml-6">
+              {storeConfig.nav.links.map((link) => (
+                <LocalizedClientLink key={link.href} href={link.href} className="hover:text-ui-fg-base">
+                  {link.label}
+                </LocalizedClientLink>
+              ))}
             </div>
           </div>
 
@@ -32,21 +41,23 @@ export default async function Nav() {
               className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
               data-testid="nav-store-link"
             >
-              Medusa Store
+              <StoreLogo />
             </LocalizedClientLink>
           </div>
 
           <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
-            <Search />
-            <div className="hidden small:flex items-center gap-x-6 h-full">
-              <LocalizedClientLink
-                className="hover:text-ui-fg-base"
-                href="/account"
-                data-testid="nav-account-link"
-              >
-                Account
-              </LocalizedClientLink>
-            </div>
+            {storeConfig.features.search && <Search />}
+            {storeConfig.features.customerAccounts && (
+              <div className="hidden small:flex items-center gap-x-6 h-full">
+                <LocalizedClientLink
+                  className="hover:text-ui-fg-base"
+                  href="/account"
+                  data-testid="nav-account-link"
+                >
+                  Account
+                </LocalizedClientLink>
+              </div>
+            )}
             <Suspense
               fallback={
                 <LocalizedClientLink

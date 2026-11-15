@@ -7,6 +7,7 @@ import { getRegion, listRegions } from "@lib/data/regions"
 import { toJsonLd } from "@lib/util/product-structured-data"
 import { getSiteOrigin, listCountryCodes, STORE_NAME } from "@lib/util/site"
 import { buildRegionsReturnPolicies } from "@lib/util/store-policies"
+import { storeConfig } from "@store-config"
 
 export const dynamic = "force-static"
 export const revalidate = 60
@@ -18,9 +19,8 @@ export async function generateMetadata(props: {
   const [origin, regions] = await Promise.all([getSiteOrigin(), listRegions()])
 
   return {
-    title: "Medusa Next.js Starter Template",
-    description:
-      "A performant frontend ecommerce starter template with Next.js 16 and Medusa.",
+    title: { absolute: storeConfig.name },
+    description: storeConfig.description,
     alternates: {
       canonical: `${origin}/${countryCode}`,
       languages: {
@@ -52,6 +52,16 @@ export default async function Home(props: {
   if (!collections || !region) {
     return null
   }
+
+  // Configured handles, in configured order. Handles that do not resolve to a
+  // Medusa collection are skipped so the page still renders.
+  const featured = storeConfig.home.featuredCollections.flatMap((handle) => {
+    const collection = collections.find((c) => c.handle === handle)
+    if (!collection) {
+      console.warn(`[store.config] home.featuredCollections: no Medusa collection with handle "${handle}"`)
+    }
+    return collection ? [collection] : []
+  })
 
   const [origin, regions] = await Promise.all([getSiteOrigin(), listRegions()])
   const homeUrl = `${origin}/${countryCode}`
@@ -91,7 +101,7 @@ export default async function Home(props: {
       <Hero />
       <div className="py-12">
         <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections} region={region} />
+          <FeaturedProducts collections={featured} region={region} />
         </ul>
       </div>
     </>

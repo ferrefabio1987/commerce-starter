@@ -1,4 +1,10 @@
+const path = require("path")
 const checkEnvVariables = require("./check-env-variables")
+
+// Local development reads the single repo-root .env. Real environment
+// variables (CI, Docker build args) always take precedence.
+const { loadEnvConfig } = require(require.resolve("@next/env", { paths: [require.resolve("next")] }))
+loadEnvConfig(path.resolve(__dirname, "../.."), process.env.NODE_ENV !== "production", undefined, true)
 
 checkEnvVariables()
 
